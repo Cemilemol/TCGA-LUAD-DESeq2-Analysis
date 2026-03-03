@@ -1,16 +1,16 @@
 # TCGA-LUAD-DESeq2-Analysis
-Differential gene expression analysis of TCGA-LUAD RNA-Seq data using DESeq2 and Bioconductor packages.
+This repository presents a comprehensive RNA-Seq differential gene expression analysis of the TCGA-LUAD cohort using TCGAbiolinks, DESeq2, and downstream visualization and annotation tools within the Bioconductor framework.
 DESeq2 ve Bioconductor paketleri kullanılarak TCGA-LUAD RNA-Seq verilerinin diferansiyel gen ekspresyon analizi.
  #1. Paket Kurulumu
  # ========================================
-BiocManager::install(c(
+  BiocManager::install(c(
   "TCGAbiolinks",
   "DESeq2",
   "SummarizedExperiment",
   "EnhancedVolcano",
   "pheatmap",
   "org.Hs.eg.db"))
-# 2. Paketleri Yükle 
+2.Paketleri Yükle 
 # ==========================================
 library(TCGAbiolinks)
 library(DESeq2)
@@ -25,7 +25,7 @@ query <- GDCquery(
   data.category = "Transcriptome Profiling",
   data.type     = "Gene Expression Quantification",
   workflow.type = "STAR - Counts")
-  # 4. VERD0YD0 D0NDD0R VE HAZIRLA
+  # 4. VERİYİ İNDİR VE HAZIRLA
 # NOT: TCGA-LUAD ~600 C6rnek iC'erir, indirme uzun sC<rebilir.
 # ==========================================
 GDCdownload(query, files.per.chunk = 10)
