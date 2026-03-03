@@ -2,7 +2,7 @@
 Differential gene expression analysis of TCGA-LUAD RNA-Seq data using DESeq2 and Bioconductor packages.
 DESeq2 ve Bioconductor paketleri kullanılarak TCGA-LUAD RNA-Seq verilerinin diferansiyel gen ekspresyon analizi.
  #1. Paket Kurulumu
- # ============================================================
+ # ========================================
 BiocManager::install(c(
   "TCGAbiolinks",
   "DESeq2",
@@ -11,7 +11,7 @@ BiocManager::install(c(
   "pheatmap",
   "org.Hs.eg.db"))
 # 2. Paketleri Yükle 
-# ============================================================
+# ==========================================
 library(TCGAbiolinks)
 library(DESeq2)
 library(SummarizedExperiment)
@@ -19,7 +19,7 @@ library(EnhancedVolcano)
 library(pheatmap)
 library(org.Hs.eg.db)
 # 3. TCGA-LUAD RNA-seq VERİSİNİ SORGULA
-# ============================================================
+# =========================================
 query <- GDCquery(
   project       = "TCGA-LUAD",
   data.category = "Transcriptome Profiling",
@@ -27,11 +27,11 @@ query <- GDCquery(
   workflow.type = "STAR - Counts")
   # 4. VERD0YD0 D0NDD0R VE HAZIRLA
 # NOT: TCGA-LUAD ~600 C6rnek iC'erir, indirme uzun sC<rebilir.
-# ============================================================
+# ==========================================
 GDCdownload(query, files.per.chunk = 10)
 data <- GDCprepare(query)
 # 5. METAVERİLERİNİ HAZIRLA
-# ============================================================
+# ==========================================
 metadata <- colData(data)
 
 # Yalnızca Tümör ve Normal doku örneklerini seç
@@ -41,7 +41,7 @@ metadata <- metadata[metadata$sample_type %in% c("Primary Tumor", "Solid Tissue 
 counts    <- assay(data)[, rownames(metadata)]
 condition <- factor(metadata$sample_type)
 # 6. DESeq2 NESNESİNİ OLUŞTUR VE ANALİZİ ÇALIŞTIR
-# ============================================================
+# ============================================
 dds <- DESeqDataSetFromMatrix(
   countData = counts,
   colData   = data.frame(condition),
@@ -51,7 +51,7 @@ dds <- dds[rowSums(counts(dds)) > 10, ]
 # DESeq2 analizini çalıştır
 dds <- DESeq(dds)
 # 7. DEG SONUÇLARINI ÇIKAR
-# ============================================================
+# ============================================
 # AyarlanmD1E p-deDerine gC6re sD1rala
 res <- res[order(res$padj), ]
 
@@ -64,7 +64,7 @@ write.csv(
   file         = "TCGA_LUAD_DEG_results.csv",
   fileEncoding = "UTF-8")
 # 8. VOLCANO PLOT
-# ============================================================
+# ==========================================
 EnhancedVolcano(
   res,
   lab      = rownames(res),
@@ -74,18 +74,18 @@ EnhancedVolcano(
   FCcutoff = 1,
   title    = "TCGA-LUAD: Tumor vs Normal",
   subtitle = "DESeq2 Differential Expression")
-  # 9. EN D0YD0 30 GEND0N ISI HARD0TASI
-# ============================================================
+  # 9. EN ÖNEMLİ 30 GENİN ISI HARİTASI
+# ========================================
 top30 <- head(rownames(sig_genes), 30)
 
-# Varyans stabilizasyon dC6nC<EC<mC< (blind=FALSE: DEG bilgisi kullanD1lD1r)
+# Varyans stabilizasyon (blind=FALSE: DEG bilgisi kullanılır)
 vsd <- vst(dds, blind = FALSE)
 
-# Z-skoru normalizasyonu iC'in satD1r ortalamasD1 C'D1kar
+# Z-skoru normalizasyonu için satır ortalaması çıkar
 mat <- assay(vsd)[top30, ]
 mat <- mat - rowMeans(mat)
 
-# DCZELTME: annotation_col iC'in row.names sC<tun isimleriyle eEleEtirilmeli
+# DÜZELTME: annotation_col iC'in row.names süttun isimleriyle eşleştirilmeli
 pheatmap(
   mat,
   annotation_col = data.frame(
